@@ -1,0 +1,328 @@
+/* ============================================
+   SKILLSWAP THEME
+   ============================================ */
+
+:root {
+  --bg-deep: #06141b;
+  --surface-1: #11212d;
+  --surface-2: #253745;
+  --accent: #4a5c6a;
+  --accent-hover: #5c7282;
+  --muted: #9ba8ab;
+  --text-light: #ccd0cf;
+  --success: #4ade80;
+  --error: #f87171;
+  --warning: #fbbf24;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+  --transition: 0.2s ease;
+}
+
+/* ============================================
+   RESET
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg-deep);
+  color: var(--text-light);
+  font-family:
+    "Inter",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--text-light);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--muted);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-light);
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--accent);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-light);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--surface-2);
+  color: var(--text-light);
+}
+
+.btn-outline:hover {
+  background: var(--surface-2);
+}
+
+.btn-danger {
+  background: var(--error);
+  color: #fff;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-light);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+/* ============================================
+   CARD
+   ============================================ */
+
+.card {
+  background: var(--surface-1);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--surface-2);
+}
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+.text-center {
+  text-align: center;
+}
+.text-muted {
+  color: var(--muted);
+}
+.mt-1 {
+  margin-top: 8px;
+}
+.mt-2 {
+  margin-top: 16px;
+}
+.mt-3 {
+  margin-top: 24px;
+}
+.mt-4 {
+  margin-top: 32px;
+}
+.mb-1 {
+  margin-bottom: 8px;
+}
+.mb-2 {
+  margin-bottom: 16px;
+}
+.mb-3 {
+  margin-bottom: 24px;
+}
+.mb-4 {
+  margin-bottom: 32px;
+}
+.flex {
+  display: flex;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gap-1 {
+  gap: 8px;
+}
+.gap-2 {
+  gap: 16px;
+}
+.gap-3 {
+  gap: 24px;
+}
+
+/* ============================================
+   EMOJI PICKER FIX
+   ============================================ */
+
+.EmojiPickerReact {
+  --epr-bg-color: #11212d !important;
+  --epr-category-label-bg-color: #11212d !important;
+  --epr-text-color: #ccd0cf !important;
+  --epr-hover-bg-color: #253745 !important;
+  --epr-search-input-bg-color: #253745 !important;
+  --epr-picker-border-color: #253745 !important;
+  --epr-category-icon-active-color: #4a5c6a !important;
+  border-radius: 12px !important;
+}
+
+.EmojiPickerReact input.epr-search {
+  width: 100% !important;
+  padding: 10px 12px 10px 36px !important;
+  background: #253745 !important;
+  border: 1px solid #253745 !important;
+  border-radius: 8px !important;
+  color: #ccd0cf !important;
+  font-size: 14px !important;
+  outline: none !important;
+}
+
+.EmojiPickerReact input.epr-search:focus {
+  border-color: #4a5c6a !important;
+}
+
+.EmojiPickerReact input.epr-search::placeholder {
+  color: #9ba8ab !important;
+}
+
+.EmojiPickerReact .epr-search-container {
+  padding: 8px 12px !important;
+  background: #11212d !important;
+}
+
+.EmojiPickerReact .epr-category-nav {
+  background: #11212d !important;
+  border-bottom: 1px solid #253745 !important;
+  padding: 4px !important;
+}
+
+.EmojiPickerReact .epr-emoji-category-content {
+  display: grid !important;
+  grid-template-columns: repeat(8, 1fr) !important;
+  gap: 2px !important;
+  padding: 4px 8px !important;
+}
+
+.EmojiPickerReact button.epr-emoji {
+  background: transparent !important;
+  border: none !important;
+  padding: 6px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease !important;
+  font-size: 22px !important;
+  width: auto !important;
+  min-width: unset !important;
+  height: auto !important;
+}
+
+.EmojiPickerReact button.epr-emoji:hover {
+  background: #253745 !important;
+  transform: scale(1.2) !important;
+}
+
+.EmojiPickerReact .epr-category-label {
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #9ba8ab !important;
+  background: #11212d !important;
+}
+
+.EmojiPickerReact .epr-body {
+  background: #11212d !important;
+}
+
+.EmojiPickerReact .epr-preview {
+  display: none !important;
+}
+
+.EmojiPickerReact .epr-category-nav button {
+  background: transparent !important;
+  color: #9ba8ab !important;
+  padding: 6px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+.EmojiPickerReact .epr-category-nav button:hover {
+  background: #253745 !important;
+}
