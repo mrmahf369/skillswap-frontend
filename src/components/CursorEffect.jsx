@@ -1,3 +1,6 @@
+// src/components/CursorEffect.jsx
+// Full-screen flow — waves + circles + dots + smoke + cursor glow
+
 import { useEffect, useRef } from "react";
 
 function CursorEffect() {
@@ -19,128 +22,190 @@ function CursorEffect() {
     resize();
     window.addEventListener("resize", resize);
 
-    const particles = [];
-    const MAX_PARTICLES = 120;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let currentX = mouseX;
+    let currentY = mouseY;
+    let mouseActive = false;
+    let time = 0;
 
-    const COLORS = [
-      "rgba(204, 208, 207, 0.9)",
-      "rgba(155, 168, 171, 0.8)",
-      "rgba(74, 92, 106, 0.9)",
-      "rgba(92, 114, 130, 0.85)",
-    ];
+    // Floating circles
+    const CIRCLES_COUNT = 5;
+    const circles = [];
 
-    let lastSpawn = 0;
-
-    const spawnParticles = (x, y) => {
-      const count = 1 + Math.floor(Math.random() * 2);
-      for (let i = 0; i < count; i++) {
-        if (particles.length >= MAX_PARTICLES) break;
-
-        const isStar = Math.random() < 0.6;
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 0.3 + Math.random() * 1.2;
-
-        particles.push({
-          x: x + (Math.random() - 0.5) * 10,
-          y: y + (Math.random() - 0.5) * 10,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 0.3,
-          size: isStar ? 3 + Math.random() * 3 : 1.5 + Math.random() * 2,
-          life: 1,
-          decay: 0.012 + Math.random() * 0.015,
-          color: COLORS[Math.floor(Math.random() * COLORS.length)],
-          rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.15,
-          isStar,
-        });
-      }
-    };
+    for (let i = 0; i < CIRCLES_COUNT; i++) {
+      circles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        radius: 60 + Math.random() * 100,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.008,
+        dotsCount: 4 + Math.floor(Math.random() * 3),
+        depth: 0.3 + Math.random() * 0.7,
+      });
+    }
 
     const handleMouseMove = (e) => {
-      const now = performance.now();
-      if (now - lastSpawn > 16) {
-        spawnParticles(e.clientX, e.clientY);
-        lastSpawn = now;
-      }
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      mouseActive = true;
     };
 
-    const drawStar = (p) => {
-      const s = p.size;
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
+    const handleMouseLeave = () => {
+      mouseActive = false;
+    };
+
+    const drawWave = (
+      offsetY,
+      amplitude,
+      frequency,
+      speed,
+      color,
+      thickness,
+    ) => {
       ctx.beginPath();
-      ctx.moveTo(0, -s);
-      ctx.lineTo(0, s);
-      ctx.moveTo(-s, 0);
-      ctx.lineTo(s, 0);
-      ctx.moveTo(-s * 0.5, -s * 0.5);
-      ctx.lineTo(s * 0.5, s * 0.5);
-      ctx.moveTo(-s * 0.5, s * 0.5);
-      ctx.lineTo(s * 0.5, -s * 0.5);
-      ctx.strokeStyle = p.color;
-      ctx.lineWidth = 1.2;
+      const points = 100;
+      for (let i = 0; i <= points; i++) {
+        const x = (i / points) * canvas.width;
+        const y =
+          offsetY +
+          Math.sin((i / points) * frequency + time * speed) * amplitude +
+          Math.sin((i / points) * frequency * 0.5 + time * speed * 0.7) *
+            amplitude *
+            0.5;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = thickness;
       ctx.lineCap = "round";
       ctx.stroke();
-      ctx.restore();
     };
 
-    const drawDot = (p) => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
+    const drawCircle = (circle) => {
+      const px = mouseActive ? currentX - canvas.width / 2 : 0;
+      const py = mouseActive ? currentY - canvas.height / 2 : 0;
+      const offsetX = (px / canvas.width) * 40 * circle.depth;
+      const offsetY = (py / canvas.height) * 40 * circle.depth;
+
+      const cx = circle.x + offsetX;
+      const cy = circle.y + offsetY;
 
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
-      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2);
-      grad.addColorStop(0, p.color);
-      grad.addColorStop(1, "transparent");
-      ctx.fillStyle = grad;
-      ctx.fill();
+      ctx.arc(cx, cy, circle.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(120, 180, 220, 0.1)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      for (let d = 0; d < circle.dotsCount; d++) {
+        const angle = circle.rotation + (d / circle.dotsCount) * Math.PI * 2;
+        const dotX = cx + Math.cos(angle) * circle.radius;
+        const dotY = cy + Math.sin(angle) * circle.radius;
+
+        const dotGlow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, 15);
+        dotGlow.addColorStop(0, "rgba(180, 220, 255, 0.7)");
+        dotGlow.addColorStop(1, "transparent");
+        ctx.fillStyle = dotGlow;
+        ctx.beginPath();
+        ctx.arc(dotX, dotY, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(220, 240, 255, 1)";
+        ctx.fill();
+      }
     };
 
-    let animationId;
+    const drawSmoke = (offset, amplitude, speed, color) => {
+      ctx.beginPath();
+      const points = 150;
+      for (let i = 0; i <= points; i++) {
+        const x = (i / points) * canvas.width;
+        const y =
+          offset +
+          Math.sin((i / points) * 2 + time * speed) * amplitude +
+          Math.cos((i / points) * 1.5 + time * speed * 0.8) * amplitude * 0.7;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 40;
+      ctx.lineCap = "round";
+      ctx.filter = "blur(30px)";
+      ctx.stroke();
+      ctx.filter = "none";
+    };
+
     const animate = () => {
+      currentX += (mouseX - currentX) * 0.08;
+      currentY += (mouseY - currentY) * 0.08;
+      time += 0.01;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
+      // Smoke layers
+      drawSmoke(canvas.height * 0.3, 60, 0.5, "rgba(74, 92, 106, 0.18)");
+      drawSmoke(canvas.height * 0.5, 80, 0.3, "rgba(92, 114, 130, 0.15)");
+      drawSmoke(canvas.height * 0.7, 70, 0.4, "rgba(120, 180, 220, 0.12)");
 
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.02;
-        p.vx *= 0.98;
-        p.vy *= 0.98;
-        p.rotation += p.rotationSpeed;
-        p.life -= p.decay;
-        p.size *= 0.99;
+      // Waves
+      drawWave(canvas.height * 0.25, 30, 6, 0.8, "rgba(120, 180, 220, 0.3)", 2);
+      drawWave(
+        canvas.height * 0.45,
+        40,
+        5,
+        0.6,
+        "rgba(180, 220, 255, 0.25)",
+        1.5,
+      );
+      drawWave(canvas.height * 0.65, 35, 7, 1.0, "rgba(74, 92, 106, 0.35)", 2);
 
-        if (p.life <= 0 || p.size < 0.3) {
-          particles.splice(i, 1);
-          continue;
-        }
+      // Circles
+      circles.forEach((circle) => {
+        circle.x += circle.speedX;
+        circle.y += circle.speedY;
+        circle.rotation += circle.rotationSpeed;
 
-        ctx.globalAlpha = p.life;
+        if (circle.x < -circle.radius) circle.x = canvas.width + circle.radius;
+        if (circle.x > canvas.width + circle.radius) circle.x = -circle.radius;
+        if (circle.y < -circle.radius) circle.y = canvas.height + circle.radius;
+        if (circle.y > canvas.height + circle.radius) circle.y = -circle.radius;
 
-        if (p.isStar) {
-          drawStar(p);
-        } else {
-          drawDot(p);
-        }
+        drawCircle(circle);
+      });
+
+      // Cursor glow
+      if (mouseActive) {
+        const gradient = ctx.createRadialGradient(
+          currentX,
+          currentY,
+          0,
+          currentX,
+          currentY,
+          300,
+        );
+        gradient.addColorStop(0, "rgba(120, 180, 220, 0.18)");
+        gradient.addColorStop(0.5, "rgba(74, 92, 106, 0.08)");
+        gradient.addColorStop(1, "transparent");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      ctx.globalAlpha = 1;
-      animationId = requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseleave", handleMouseLeave);
     animate();
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animationId);
     };
   }, []);
 
@@ -154,7 +219,7 @@ function CursorEffect() {
         width: "100vw",
         height: "100vh",
         pointerEvents: "none",
-        zIndex: 9999,
+        zIndex: 0,
       }}
     />
   );

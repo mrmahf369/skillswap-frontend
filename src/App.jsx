@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 
 import CursorEffect from "./components/CursorEffect";
+import BackgroundEffect from "./components/BackgroundEffect";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -19,9 +20,16 @@ import Messages from "./pages/Messages";
 function App() {
   return (
     <Router>
+      <BackgroundEffect />
       <CursorEffect />
       <div
-        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          zIndex: 2,
+        }}
       >
         <Navbar />
         <main style={{ flex: 1 }}>

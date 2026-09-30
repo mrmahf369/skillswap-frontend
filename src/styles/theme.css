@@ -19,6 +19,8 @@
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
   --transition: 0.2s ease;
+  --mouse-x: 0;
+  --mouse-y: 0;
 }
 
 /* ============================================
@@ -325,4 +327,25 @@ textarea::placeholder {
 
 .EmojiPickerReact .epr-category-nav button:hover {
   background: #253745 !important;
+}
+
+/* ============================================
+   BACKGROUND EFFECT — Simple Gradient Only
+   ============================================ */
+
+.bg-effect-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at top,
+    #0a1a24 0%,
+    #06141b 50%,
+    #030a10 100%
+  );
 }
